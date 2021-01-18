@@ -66,13 +66,15 @@
 
             <!-- Section heading -->
             <div class="col-xs-12 col-md-4 section-heading">
-                <h1><a href="{{.Site.BaseURL}}/open-projects/{{if .Site.Params.uglyURLs}}index.html{{end}}">{{ with .Site.Params.open_projects.title }}{{ . | markdownify }}{{ end }}</a></h1>
+                <h1>{{ with .Site.Params.open_projects.title }}{{ . | markdownify }}{{ end }}</h1>
                 {{ with .Site.Params.open_projects.subtitle }}<p>{{ . | markdownify }}</p>{{ end }}
             </div>
 
             <!-- Vacancies -->
             <div class="col-xs-12 col-md-8">
-                <h2>Coming soon...</h2>
+                <p class="article-style" itemprop="articleBody">
+                    Currently, we do not have any openings available with the MuLab. Please watch this space for any upcoming positions that might arise.
+                </p>
             </div>
         </div>
     </div>
