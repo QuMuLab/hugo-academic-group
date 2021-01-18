@@ -59,4 +59,22 @@
         </div>
 
 </section>
+{{ else }}
+<section id="open-projects" class="home-section">
+    <div class="container">
+       <div class="row">
+
+            <!-- Section heading -->
+            <div class="col-xs-12 col-md-4 section-heading">
+                <h1><a href="{{.Site.BaseURL}}/open-projects/{{if .Site.Params.uglyURLs}}index.html{{end}}">{{ with .Site.Params.open_projects.title }}{{ . | markdownify }}{{ end }}</a></h1>
+                {{ with .Site.Params.open_projects.subtitle }}<p>{{ . | markdownify }}</p>{{ end }}
+            </div>
+
+            <!-- Vacancies -->
+            <div class="col-xs-12 col-md-8">
+                <h2>Coming soon...</h2>
+            </div>
+        </div>
+    </div>
+</section>
 {{ end }}
