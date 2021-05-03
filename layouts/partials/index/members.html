@@ -9,13 +9,15 @@
         </div>
 
         <!-- Members -->
+        {{ range (where .Site.RegularPages "Type" "member").GroupByParam "sort_position" }}
         <div class="row">
-            {{ range (sort (where .Site.RegularPages "Type" "member") ".Params.sort_position")}}
+            {{ range .Pages.ByDate }}
                 {{ if not .Params.is_former_member }}
                     {{ partial "member_simple" . }}
                 {{ end }}
             {{ end }}
         </div>
+        {{ end }}
 
         <!-- Link to all members -->
         <div>

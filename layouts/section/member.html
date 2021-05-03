@@ -13,8 +13,13 @@
 
 <div class="container">
     <h1>Alumni</h1>
-    {{ range where .Site.RegularPages "Section" "alumni" }}
-        {{ partial "alumni_li" . }}
+    {{ range ((where .Site.RegularPages "Section" "alumni").GroupByParam "student_type").Reverse }}
+    <div class="row">
+        <h2>{{ .Key }}</h2>
+        {{ range .Pages.ByDate.Reverse }}
+            {{ partial "alumni_li" . }}
+        {{ end }}
+    </div>
     {{ end }}
 </div>
 
