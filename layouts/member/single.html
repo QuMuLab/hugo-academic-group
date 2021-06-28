@@ -119,6 +119,46 @@
             </div>
         </div>
 
+        {{ $member_id:= .Params.id }}
+
+        <!-- Get the publications for this member: https://discourse.gohugo.io/t/filter-pages-based-on-specific-author/33557/3 -->
+        {{ $authorpapers := slice }}
+        {{ range (where .Site.Pages "Section" "publication") }}
+        {{ $p := . }}<!-- store current page iteration -->
+            {{ with .Params.authors }}
+                {{ if gt (len (where . "id" $member_id)) 0 }}
+                    {{ $authorpapers = $authorpapers | append $p }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+
+
+        {{ .Scratch.Add "found" false }}
+
+        {{ range first 5 ( sort $authorpapers "Date" "desc" ) }}
+            {{ $current_publication := . }}
+            <!-- {{ range .Params.authors }} -->
+                <!-- {{ if eq .id $member_id }} -->
+                {{ if not ($.Scratch.Get "found") }}
+                    <div class="row">
+                    <div class="col-sm-12">
+                        <h3>Recent Publications</h3>
+                        <ul>
+                    {{ $.Scratch.Set "found" true }}
+                {{ end }}
+                <li>
+                    <a href="{{$current_publication.Permalink}}">{{ $current_publication.Title }}. <em>{{ $current_publication.Params.publication_short }}</em></a>
+                </li>
+                <!-- {{ end }} -->
+            <!-- {{ end }} -->
+        {{ end }}
+        {{ if (.Scratch.Get "found") }}
+            </ul>
+            </div>
+        </div>
+        {{ end }}
+        {{ .Scratch.Delete "found" }}
+
     </div>
 </div>
 </div>
