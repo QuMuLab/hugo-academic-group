@@ -33,6 +33,9 @@
     {{ if and (ne $grad "") (ne $student "") }}
         {{ errorf "alumni page %q sets both grad_type (%q) and student_type (%q), so it would be listed twice. Keep only one." .File.Path $grad $student }}
     {{ end }}
+    {{ if and (ne $grad "") (not (isset .Params "graduated_date")) }}
+        {{ errorf "alumni page %q is a grad alum (grad_type %q) but has no graduated_date, so it would be sorted and labelled by the date it joined instead of the date it finished. Add graduated_date = \"YYYY-MM-DD\"." .File.Path $grad }}
+    {{ end }}
     {{ if not (isset .Params "date") }}
         {{ errorf "alumni page %q has no date, so the alumni listing would show an empty year for it. Add date = \"YYYY-MM-DD\"." .File.Path }}
     {{ end }}
