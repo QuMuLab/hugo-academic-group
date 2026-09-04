@@ -1,0 +1,22 @@
+{{/* Takes a page collection, returns it sorted newest-first by the date the person
+     left the lab: graduated_date when set, otherwise the page's own date (which is
+     when they joined). Sorting on .Pages.ByDate alone ordered grad alum by their
+     start date, so a long PhD outranked a more recent departure.
+
+     The sort key inverts the timestamp so a plain ascending sort puts the most
+     recent departure first, then appends the name so that people sharing a date
+     land in a stable alphabetical order rather than whatever order Hugo hands us. */}}
+{{ $keyed := slice }}
+{{ range . }}
+    {{ $when := .Date }}
+    {{ with .Params.graduated_date }}
+        {{ $when = time . }}
+    {{ end }}
+    {{ $key := printf "%013d|%s" (sub 99999999999 $when.Unix) (lower (printf "%v" (default .Title .Params.name))) }}
+    {{ $keyed = $keyed | append (dict "page" . "key" $key) }}
+{{ end }}
+{{ $pages := slice }}
+{{ range sort $keyed "key" }}
+    {{ $pages = $pages | append .page }}
+{{ end }}
+{{ return $pages }}

@@ -36,6 +36,11 @@
     {{ if not (isset .Params "date") }}
         {{ errorf "alumni page %q has no date, so the alumni listing would show an empty year for it. Add date = \"YYYY-MM-DD\"." .File.Path }}
     {{ end }}
+    {{ if isset .Params "graduated_date" }}
+        {{ if not (findRE "^[0-9]{4}-[0-9]{2}-[0-9]{2}" (printf "%v" .Params.graduated_date)) }}
+            {{ errorf "alumni page %q has a graduated_date (%q) that is not a YYYY-MM-DD date, which fails the listing sort. Fix the value, or drop the line to fall back to the join date." .File.Path (printf "%v" .Params.graduated_date) }}
+        {{ end }}
+    {{ end }}
 {{ end }}
 
 {{ $alumni_len := len (where .Site.RegularPages "Section" "alumni" ) }}
@@ -46,7 +51,7 @@
     {{ range ((where .Site.RegularPages "Section" "alumni").GroupByParam "grad_type").Reverse }}
     <div class="row">
         <h2>{{ .Key }}</h2>
-        {{ range .Pages.ByDate.Reverse }}
+        {{ range partial "alumni_sorted" .Pages }}
             {{ partial "alumni_li" . }}
         {{ end }}
     </div>
@@ -54,7 +59,7 @@
     {{ range ((where .Site.RegularPages "Section" "alumni").GroupByParam "student_type").Reverse }}
     <div class="row">
         <h2>{{ .Key }}</h2>
-        {{ range .Pages.ByDate.Reverse }}
+        {{ range partial "alumni_sorted" .Pages }}
             {{ partial "alumni_li" . }}
         {{ end }}
     </div>

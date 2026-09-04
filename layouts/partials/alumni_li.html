@@ -18,7 +18,7 @@
                 {{end}}
             </h3>
             <h3>
-                ({{ .Params.date.Year }})
+                ({{ with .Params.graduated_date }}{{ (time .).Year }}{{ else }}{{ .Params.date.Year }}{{ end }})
             </h3>
         </div>
 
