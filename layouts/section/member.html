@@ -8,6 +8,36 @@
     {{ end }}
 </div>
 
+{{/* Build guard for the alumni listing below. It groups pages with GroupByParam,
+     which silently OMITS any page missing the grouping param -- so a member moved
+     into content/alumni/ without one just quietly vanishes from the site. Fail the
+     build instead of shipping a page with someone missing from it. */}}
+{{ range where .Site.RegularPages "Section" "alumni" }}
+    {{ $grad := "" }}
+    {{ $student := "" }}
+    {{ if isset .Params "grad_type" }}
+        {{ $grad = printf "%v" .Params.grad_type }}
+        {{ if eq $grad "" }}
+            {{ errorf "alumni page %q sets grad_type to an empty string, which renders a stray empty heading on the team page. Remove the line or give it a value." .File.Path }}
+        {{ end }}
+    {{ end }}
+    {{ if isset .Params "student_type" }}
+        {{ $student = printf "%v" .Params.student_type }}
+        {{ if eq $student "" }}
+            {{ errorf "alumni page %q sets student_type to an empty string, which renders a stray empty heading on the team page. Remove the line or give it a value." .File.Path }}
+        {{ end }}
+    {{ end }}
+    {{ if and (eq $grad "") (eq $student "") }}
+        {{ errorf "alumni page %q has neither grad_type nor student_type, so it would be dropped from the alumni listing entirely. Add one (e.g. grad_type = \"PhD Student\", student_type = \"Summer Research Project\")." .File.Path }}
+    {{ end }}
+    {{ if and (ne $grad "") (ne $student "") }}
+        {{ errorf "alumni page %q sets both grad_type (%q) and student_type (%q), so it would be listed twice. Keep only one." .File.Path $grad $student }}
+    {{ end }}
+    {{ if not (isset .Params "date") }}
+        {{ errorf "alumni page %q has no date, so the alumni listing would show an empty year for it. Add date = \"YYYY-MM-DD\"." .File.Path }}
+    {{ end }}
+{{ end }}
+
 {{ $alumni_len := len (where .Site.RegularPages "Section" "alumni" ) }}
 {{ if gt $alumni_len 0 }}
 
