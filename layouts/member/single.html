@@ -92,7 +92,7 @@
             {{ range $projects }}
                 {{ $current_project := . }}
                 {{ range .Params.participants }}
-                    {{ if eq .id $member_id }}
+                    {{ if and $member_id (eq .id $member_id) }}
                     {{ if not ($.Scratch.Get "found") }}
                         <div class="row">
                         <div class="col-sm-12">
@@ -126,7 +126,7 @@
         {{ range (where .Site.Pages "Section" "publication") }}
         {{ $p := . }}<!-- store current page iteration -->
             {{ with .Params.authors }}
-                {{ if gt (len (where . "id" $member_id)) 0 }}
+                {{ if and $member_id (gt (len (where . "id" $member_id)) 0) }}
                     {{ $authorpapers = $authorpapers | append $p }}
                 {{ end }}
             {{ end }}
@@ -137,20 +137,16 @@
 
         {{ range first 5 ( sort $authorpapers "Date" "desc" ) }}
             {{ $current_publication := . }}
-            <!-- {{ range .Params.authors }} -->
-                <!-- {{ if eq .id $member_id }} -->
-                {{ if not ($.Scratch.Get "found") }}
-                    <div class="row">
-                    <div class="col-sm-12">
-                        <h3>Recent Publications</h3>
-                        <ul>
-                    {{ $.Scratch.Set "found" true }}
-                {{ end }}
-                <li>
-                    <a href="{{$current_publication.Permalink}}">{{ $current_publication.Title }}. <em>{{ $current_publication.Params.publication_short }}</em></a>
-                </li>
-                <!-- {{ end }} -->
-            <!-- {{ end }} -->
+            {{ if not ($.Scratch.Get "found") }}
+                <div class="row">
+                <div class="col-sm-12">
+                    <h3>Recent Publications</h3>
+                    <ul>
+                {{ $.Scratch.Set "found" true }}
+            {{ end }}
+            <li>
+                <a href="{{$current_publication.Permalink}}">{{ $current_publication.Title }}. <em>{{ $current_publication.Params.publication_short }}</em></a>
+            </li>
         {{ end }}
         {{ if (.Scratch.Get "found") }}
             </ul>
