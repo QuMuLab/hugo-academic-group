@@ -1,0 +1,18 @@
+{{- /*
+  Replacement for the `getJSON` function (removed in Hugo v0.144), used by the
+  hugo-cite shortcode overrides. Takes a path relative to the project root, or
+  a remote URL, and returns the decoded JSON.
+*/ -}}
+{{- $data := slice -}}
+{{- if findRE `^https?://` . 1 -}}
+  {{- with try (resources.GetRemote .) -}}
+    {{- with .Err -}}
+      {{- errorf "hugo-cite: unable to fetch bibliography %q: %s" $.Value . -}}
+    {{- else with .Value -}}
+      {{- $data = .Content | transform.Unmarshal -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- $data = os.ReadFile . | transform.Unmarshal -}}
+{{- end -}}
+{{- return $data -}}

@@ -1,14 +1,15 @@
-{{$authors_len := len . }}
+{{- $authors := . | default slice -}}
+{{$authors_len := len $authors }}
 <div itemprop="author">
         {{if gt $authors_len 1}}
-            {{ range first (sub $authors_len 1) . }}
+            {{ range first (sub $authors_len 1) $authors }}
                 {{partial "author.html" .}},
             {{ end }}
-            {{ range last 1 . }}
+            {{ range last 1 $authors }}
                  {{partial "author.html" .}}
             {{end}}
         {{else}}
-            {{range . }}
+            {{range $authors }}
                 {{partial "author.html" .}}
             {{end}}
         {{end}}

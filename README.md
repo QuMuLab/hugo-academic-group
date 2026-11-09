@@ -31,3 +31,20 @@ An academic group website theme for Hugo.
  ```
 
  Open [localhost:1313](localhost:1313) and your website should appear.
+
+
+## Citations
+
+The theme includes `cite` and `bibliography` shortcodes for CSL-JSON
+references (e.g., a `bib.json` file in a page bundle):
+
+ ```
+    Some claim {{< cite "key" >}}.
+
+    {{< bibliography cited >}}
+ ```
+
+These are vendored from [hugo-cite](https://github.com/loup-brun/hugo-cite)
+(WTFPL, see `layouts/partials/bibliography/LICENSE-hugo-cite`) and updated to
+work with current versions of Hugo, so hugo-cite does not need to be installed
+separately.
